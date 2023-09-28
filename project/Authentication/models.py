@@ -85,3 +85,21 @@ class PhoneOTP(models.Model):
     
     class Meta:
         verbose_name_plural = 'Phone OTPs'
+        
+
+class EmailOTP(models.Model):
+    
+    email = models.EmailField(
+        verbose_name='email address',
+        max_length=255,
+        unique=True,
+    )
+    
+    otp = models.IntegerField(null=True, blank=True)
+    otp_created_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.email}"
+    
+    class Meta:
+        verbose_name_plural = 'Email OTPs'
