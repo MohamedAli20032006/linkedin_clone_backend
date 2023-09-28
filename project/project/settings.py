@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     
     # my_apps
     'Authentication',
+    'network',
     
     # modules
     'rest_framework',
