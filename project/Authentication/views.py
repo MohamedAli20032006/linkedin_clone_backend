@@ -14,3 +14,12 @@ class LoginAPIView(APIView):
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
     
+
+class OAuthAPIView(APIView):
+    permission_classes = [AllowAny]
+    serializer_class = OAuthSerializer
+    
+    def post(self, request, *args, **kwargs):
+        serializer = OAuthSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
