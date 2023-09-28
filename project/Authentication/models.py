@@ -72,3 +72,16 @@ class User(AbstractBaseUser):
             'refresh': str(refresh),
             'access': str(refresh.access_token),
         }
+ 
+        
+class PhoneOTP(models.Model):
+    
+    phone_number = models.BigIntegerField(unique=True, validators=[MinValueValidator(1000000000), MaxValueValidator(9999999999)])
+    otp = models.IntegerField(null=True, blank=True)
+    otp_created_at = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.phone_number}"
+    
+    class Meta:
+        verbose_name_plural = 'Phone OTPs'
