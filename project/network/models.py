@@ -31,3 +31,13 @@ class SecondConnections(models.Model):
         
     def __str__(self):
         return f"{self.owner.full_name} --> {self.person.profile.full_name}"
+    
+    
+class ThirdConnections(models.Model):
+    
+    owner = models.ForeignKey("Profile.Profile", on_delete=models.CASCADE)
+    person = models.ForeignKey(User, on_delete=models.CASCADE)
+    count = models.IntegerField(default = 0)
+        
+    def __str__(self):
+        return f"{self.owner.full_name} --> {self.person.profile.full_name}"
