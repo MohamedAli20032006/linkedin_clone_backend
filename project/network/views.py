@@ -47,3 +47,12 @@ class ConnectionRequestWithdrawView(UpdateAPIView):
         return Response({"message": "Your sent request has been withdrawn successfully"},
                          status=status.HTTP_200_OK)
         
+        
+class ConnectionRequestReceiveView(ListAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = ConnectionRequestSerializer
+    
+    def get_queryset(self):
+        profile = get_object_or_404(Profile, user = self.request.user.id)
+        return ConnectionRequest.objects.filter(reciever = profile, state = "Pending")         
