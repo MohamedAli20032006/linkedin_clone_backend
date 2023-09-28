@@ -58,3 +58,21 @@ class VerifyPhoneOTP(APIView):
         serializer = VerifyPhoneOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+class ForgetPassword(UpdateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = ForgetPasswordSerializer
+    
+    def get_object(self):
+        try:
+            email = self.request.data['email']
+            return User.objects.get(email=email)
+        except KeyError:
+            return None
+    
+    def update(self, request, *args, **kwargs):
+        response = super(ForgetPassword, self).update(request, *args, **kwargs)
+        response.data = {"message": "Password has been reset successfully" }
+        return response
+    
