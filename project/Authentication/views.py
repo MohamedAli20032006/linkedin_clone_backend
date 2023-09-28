@@ -39,3 +39,13 @@ class VerifyEmailOTP(APIView):
         serializer = VerifyEmailOTPSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+    
+class SendPhoneOTP(CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = SendPhoneOTPSerializer
+    
+    def create(self, request, *args, **kwargs):
+        response = super(SendPhoneOTP, self).create(request, *args, **kwargs)
+        response.status_code = status.HTTP_200_OK
+        return response
