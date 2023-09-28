@@ -55,4 +55,20 @@ class ConnectionRequestReceiveView(ListAPIView):
     
     def get_queryset(self):
         profile = get_object_or_404(Profile, user = self.request.user.id)
-        return ConnectionRequest.objects.filter(reciever = profile, state = "Pending")         
+        return ConnectionRequest.objects.filter(reciever = profile, state = "Pending") 
+    
+
+class ConnectionRequestIgnoreView(UpdateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = ConnectionRequestIgnoreSerializer
+    
+    
+    def get_queryset(self):
+        profile = get_object_or_404(Profile, user = self.request.user.id)
+        return ConnectionRequest.objects.filter(reciever = profile, state = "Pending") 
+    
+    def patch(self, request, *args, **kwargs):
+        super().patch(request, *args, **kwargs)
+        return Response({"message": "The request received has been ignored successfully"},
+                         status=status.HTTP_200_OK)        
