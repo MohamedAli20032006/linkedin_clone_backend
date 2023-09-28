@@ -30,3 +30,20 @@ class ConnectionRequestSendView(ListCreateAPIView):
         reciever_profile = get_object_or_404(Profile, username = username)
         request.data.update({"reciever" : reciever_profile.id})
         return super().post(request, *args, **kwargs)
+
+
+class ConnectionRequestWithdrawView(UpdateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = ConnectionRequestWithdrawSerializer
+    
+    
+    def get_queryset(self):
+        profile = get_object_or_404(Profile, user = self.request.user.id)
+        return ConnectionRequest.objects.filter(sender = profile).exclude(state= "Withdrawn")
+   
+    def patch(self, request, *args, **kwargs):
+        super().patch(request, *args, **kwargs)
+        return Response({"message": "Your sent request has been withdrawn successfully"},
+                         status=status.HTTP_200_OK)
+        
