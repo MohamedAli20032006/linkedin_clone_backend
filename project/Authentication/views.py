@@ -1,5 +1,17 @@
 from django.shortcuts import render
-
+from rest_framework import generics, serializers, status, mixins
+from rest_framework.generics import *
+import time, random
+from Authentication.serializers import *
+from django.core.mail import EmailMessage
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from django.http import Http404
+from django.contrib.auth.hashers import check_password
+from django.conf import settings
+from django.core.exceptions import BadRequest, ObjectDoesNotExist
+from .models import User
 # Create your views here.
 class RegistrationAPIView(CreateAPIView):
     permission_classes = [AllowAny]
