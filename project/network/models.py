@@ -41,3 +41,15 @@ class ThirdConnections(models.Model):
         
     def __str__(self):
         return f"{self.owner.full_name} --> {self.person.profile.full_name}"
+    
+    
+class Follow(models.Model):
+    
+    profile = models.ForeignKey("Profile.Profile", on_delete=models.CASCADE)
+    follower = models.ForeignKey(User, on_delete=models.CASCADE)
+        
+    def __str__(self):
+        return f"{self.profile.full_name} --> {self.follower.profile.full_name}"
+    
+    class Meta:
+        unique_together = (('profile', 'follower'))
