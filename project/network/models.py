@@ -1,4 +1,13 @@
 from django.db import models
+from Authentication.models import User
+
+
+
+CONNECTION_STATES = [
+        ('Pending', 'Pending'),
+        ('Withdrawn', 'Withdrawn'),
+        ('Ignored', 'Ignored')
+    ]
 
 # Create your models here.
 class ConnectionRequest(models.Model):
