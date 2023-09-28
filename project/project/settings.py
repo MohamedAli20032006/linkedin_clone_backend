@@ -40,6 +40,9 @@ INSTALLED_APPS = [
     
     # my_apps
     'Authentication',
+    
+    # modules
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
