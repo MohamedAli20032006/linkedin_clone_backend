@@ -49,3 +49,12 @@ class SendPhoneOTP(CreateAPIView):
         response = super(SendPhoneOTP, self).create(request, *args, **kwargs)
         response.status_code = status.HTTP_200_OK
         return response
+    
+
+class VerifyPhoneOTP(APIView):
+    permission_classes = [AllowAny]
+    
+    def post(self, request, *args, **kwargs):
+        serializer = VerifyPhoneOTPSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
