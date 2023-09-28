@@ -23,3 +23,9 @@ class OAuthAPIView(APIView):
         serializer = OAuthSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class SendEmailOTP(CreateAPIView):
+    permission_classes = [AllowAny]
+    serializer_class = SendEmailOTPSerializer
+    
