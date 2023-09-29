@@ -117,4 +117,16 @@ class ReplyReaction(models.Model):
         verbose_name = 'Reply Reaction'
         verbose_name_plural = 'Reply Reactions'
         unique_together = (('comment_reply', 'reaction_owner'))
-      
+       
+    
+class HashTag(models.Model):
+    
+    topic = models.CharField(max_length = 255)
+    associated_posts = models.ManyToManyField(Post, related_name = "hashtags", blank = True)
+    followed_by = models.ManyToManyField(Profile,  related_name = "followed_hastags")
+    
+    class Meta:
+        verbose_name = 'HashTag'
+        verbose_name_plural = 'HashTags'
+    
+    
