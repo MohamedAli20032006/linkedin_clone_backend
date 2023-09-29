@@ -174,3 +174,18 @@ class SingleCommentReactionView(RetrieveUpdateDestroyAPIView):
             
         return super().delete(request, *args, **kwargs)
    
+    
+class ReplyView(ListCreateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReplySerializer
+    
+    def get_queryset(self):
+        comment = self.request.GET.get('comment')
+        return CommentReply.objects.filter(comment = comment)
+    
+    def post(self, request, *args, **kwargs):
+        request.data.update({"reply_owner" : Profile.objects.get(user = request.user).id})
+        return super().post(request, *args, **kwargs)
+
+
