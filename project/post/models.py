@@ -67,8 +67,7 @@ class PostReaction(models.Model):
     def __str__(self):
         return f"{self.reacted_by.full_name} --> {self.reaction_type} --> ({self.post})"
 
-
-    
+ 
 class Comment(models.Model):
     
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -82,3 +81,15 @@ class Comment(models.Model):
         verbose_name = 'Comment'
         verbose_name_plural = 'Comments'
   
+       
+class CommentReaction(models.Model):
+    
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    reaction_owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    reaction_type = models.ForeignKey(ReactionType, on_delete=models.CASCADE)
+    
+    class Meta:
+        verbose_name = 'Comment Reaction'
+        verbose_name_plural = 'Comment Reactions'
+        unique_together = (('comment', 'reaction_owner'))
+    
