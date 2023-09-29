@@ -1,4 +1,5 @@
 from django.db import models
+from Profile.models import Profile
 
 # Create your models here.
 class NotificationType(models.Model):
