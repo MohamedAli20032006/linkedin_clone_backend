@@ -1,9 +1,9 @@
 from rest_framework import serializers, status
 from .models import *
-from Notification.models import *
-from Profile.serializers import ShortProfileSerializer, ProfileViewersSerializer
+from notification.models import *
+# from Profile.serializers import ShortProfileSerializer, ProfileViewersSerializer
 from django.shortcuts import get_object_or_404
-from Post.serializers import *
+from post.serializers import *
 from Profile.models import ProfileView
 class NotificationSerializer(serializers.ModelSerializer):
     

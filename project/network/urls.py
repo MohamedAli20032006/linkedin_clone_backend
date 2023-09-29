@@ -1,6 +1,6 @@
 from django.urls import path
-from Profile.views import *
-from Network.views import *
+from profile.views import *
+from network.views import *
 
 urlpatterns = [
     path('connection/request/send/', ConnectionRequestSendView.as_view()),

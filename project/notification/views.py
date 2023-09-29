@@ -1,13 +1,13 @@
 from rest_framework import status
 from rest_framework.generics import *
-from Notification.serializers import *
+from notification.serializers import *
 from rest_framework.permissions import AllowAny, IsAuthenticated, IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from .models import *
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import get_object_or_404
 from itertools import chain
-from Post.views import BasicPagination
+from post.views import BasicPagination
 from rest_framework.views import APIView
 from rest_framework.pagination import PageNumberPagination
 
