@@ -189,3 +189,20 @@ class ReplyView(ListCreateAPIView):
         return super().post(request, *args, **kwargs)
 
 
+class SingleReplyView(RetrieveDestroyAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = SingleReplySerializer
+    
+    def get_queryset(self):
+        return CommentReply.objects.all()
+    
+    def delete(self, request, *args, **kwargs):
+        
+        comment_reply = get_object_or_404(CommentReply,id = kwargs['pk'])
+        if not comment_reply.reply_owner.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().destroy(request, *args, **kwargs)
+
+
