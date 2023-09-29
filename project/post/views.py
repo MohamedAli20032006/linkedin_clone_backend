@@ -146,3 +146,31 @@ class CommentReactionView(ListCreateAPIView):
         request.data.update({"reaction_owner" : Profile.objects.get(user = request.user).id})
         return super().post(request, *args, **kwargs)
    
+   
+class SingleCommentReactionView(RetrieveUpdateDestroyAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = SingleCommentReactionSerializer
+    
+    queryset = CommentReaction.objects.all()
+    
+    def patch(self, request, *args, **kwargs):
+        
+        comment_reaction = get_object_or_404(CommentReaction,id = kwargs['pk'])
+        if not comment_reaction.reaction_owner.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+        
+        request.data.update({"comment" : comment_reaction.comment.id})
+        return super().patch(request, *args, **kwargs)
+
+    
+    def delete(self, request, *args, **kwargs):
+        
+        comment_reaction = get_object_or_404(CommentReaction,id = kwargs['pk'])
+        if not comment_reaction.reaction_owner.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+            
+        return super().delete(request, *args, **kwargs)
+   
