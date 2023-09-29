@@ -161,3 +161,23 @@ class FollowersView(ListAPIView):
         user_profile = get_object_or_404(Profile, user = self.request.user)
         return Follow.objects.filter(profile = user_profile)
     
+
+class MutualConnectionsView(ListAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = MutualConnectionsSerializer
+    
+    def get_queryset(self):
+        profile = Profile.objects.get_or_create(user = self.request.user)[0]
+        username = self.request.GET.get('username')
+        if profile.username == username:
+            return Profile.objects.none()
+        else:
+            owner_profile = Profile.objects.get_or_create(user = self.request.user)[0]
+            viewer_profile = get_object_or_404(Profile, username = username)
+            queryset = owner_profile.first_degrees.all()
+            queryset = queryset.intersection(queryset, viewer_profile.first_degrees.all())
+            return queryset
+            
+            
+            
