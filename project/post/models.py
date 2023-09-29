@@ -67,3 +67,18 @@ class PostReaction(models.Model):
     def __str__(self):
         return f"{self.reacted_by.full_name} --> {self.reaction_type} --> ({self.post})"
 
+
+    
+class Comment(models.Model):
+    
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    comment_owner = models.ForeignKey(Profile,on_delete=models.CASCADE)
+    text = models.TextField()
+    reacted_by = models.ManyToManyField(Profile, through='CommentReaction', related_name="reacted_comments")
+    replied_by = models.ManyToManyField(Profile, through='CommentReply',related_name = "replied_comments")
+    created_at = models.DateTimeField(auto_now_add = True)
+    
+    class Meta:
+        verbose_name = 'Comment'
+        verbose_name_plural = 'Comments'
+  
