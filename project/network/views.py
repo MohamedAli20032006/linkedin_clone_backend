@@ -87,3 +87,25 @@ class ConnectionRequestAcceptView(views.APIView):
         
         return Response(serializer.data, status=status.HTTP_200_OK)
 
+
+class ConnectionRemoveView(views.APIView):
+    
+    permission_classes = [IsAuthenticated]
+
+    def post(self,request, *args, **kwargs):
+        try:
+            username = self.request.data['username']
+            user1 = self.request.user
+            profile1 = get_object_or_404(Profile, user=user1)
+            # profile1 = Profile.objects.get(user = user1)
+            # profile2 = Profile.objects.get(username = username)
+            profile2 = get_object_or_404(Profile, username=username)
+            user2 = profile2.user
+            if not profile1.first_degrees.filter(id = user2.id).exists():
+                return Response({"detail": "You already don't have any connection with this profile."}, status=status.HTTP_400_BAD_REQUEST)
+            profile1.first_degrees.remove(user2)
+            profile2.first_degrees.remove(user1)
+            
+            return Response({"detail": "Connection has been removed successfully"}, status=status.HTTP_200_OK)
+        except KeyError:
+            return Response({"detail": "Please provide profile username"}, status=status.HTTP_400_BAD_REQUEST)
