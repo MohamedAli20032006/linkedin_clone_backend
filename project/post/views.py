@@ -280,3 +280,51 @@ def check_post_exists_in_response(post, response):
                 return True
         return False  
    
+
+class FeedView(views.APIView, PaginationHandlerMixin):
+    
+    permission_classes = [IsAuthenticated]
+    pagination_class = BasicPagination
+
+    
+    
+    def get(self, request, *args, **kwargs):
+        response = list()
+        
+        user_profile = get_object_or_404(Profile, user = self.request.user)
+        following_profiles = self.request.user.following.all()
+        for profile in following_profiles:
+            
+            for reaction in profile.post_reactions.all():
+                if not check_post_exists_in_response(reaction.post,response):
+                    
+                    data = PostSerializer(instance = reaction.post, context = {"request": self.request}).data
+                    data['message'] = f"{reaction.post.post_owner.full_name} reacted to this Post."
+                    response.append(data)
+
+            for comment in profile.comment_set.all():
+                if not check_post_exists_in_response(comment.post,response):
+                    data = PostSerializer(instance = comment.post, context = {"request": self.request}).data
+                    data['message'] = f"{comment.post.post_owner.full_name} commented on this Post."
+                    response.append(data)
+                    
+            for post in profile.created_posts.all():
+                if not check_post_exists_in_response(post,response):
+                    data = PostSerializer(instance = post, context = {"request": self.request}).data
+                    response.append(data)
+                    
+        for hashtag in user_profile.followed_hastags.all():
+            for post in hashtag.associated_posts.filter().exclude(post_owner = user_profile):
+                if not check_post_exists_in_response(post,response):
+                    data = PostSerializer(instance = post, context = {"request": self.request}).data
+                    data['message'] = f" A post related to {hashtag.topic} "
+                    response.append(data)
+                    
+        for post in Post.objects.all():
+            if not check_post_exists_in_response(post,response):
+                data = PostSerializer(instance = post, context = {"request": self.request}).data
+                response.append(data)
+                
+        page = self.paginate_queryset(response)
+        return self.get_paginated_response(page)
+
