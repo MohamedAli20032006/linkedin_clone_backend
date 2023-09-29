@@ -42,4 +42,19 @@ class PostView(CreateAPIView):
                              "parent_post": None})
         return super().post(request, *args, **kwargs)
 
-  
+   
+class SinglePostView(RetrieveDestroyAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    
+    queryset = Post.objects.all()
+    
+    
+    def delete(self, request, *args, **kwargs):
+        post = get_object_or_404(Post,id = kwargs['pk'])
+        if not post.post_owner.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().delete(request, *args, **kwargs)
+
