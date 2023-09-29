@@ -250,4 +250,19 @@ class SingleReplyReactionView(RetrieveUpdateDestroyAPIView):
             
         return super().delete(request, *args, **kwargs)
     
+
+class PostBookmarkView(ListCreateAPIView):
     
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostBookmarkSerializer
+    
+    
+    def get_queryset(self):
+        viewer_profile = get_object_or_404(Profile, user = self.request.user)
+        return viewer_profile.saved_posts.all()
+    
+    def post(self, request, *args, **kwargs):
+        request.data.update({"post_owner" : Profile.objects.get(user = request.user).id})
+        return super().post(request, *args, **kwargs)
+ 
+ 
