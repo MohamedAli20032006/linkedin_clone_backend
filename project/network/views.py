@@ -72,3 +72,18 @@ class ConnectionRequestIgnoreView(UpdateAPIView):
         super().patch(request, *args, **kwargs)
         return Response({"message": "The request received has been ignored successfully"},
                          status=status.HTTP_200_OK)        
+        
+        
+class ConnectionRequestAcceptView(views.APIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = ConnectionRequestAcceptSerializer
+
+    
+    def post(self,request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,context = self.request)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
