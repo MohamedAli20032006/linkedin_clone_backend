@@ -119,3 +119,26 @@ class ConnectionListView(ListAPIView):
     def get_queryset(self):
         return FirstConnections.objects.filter(person = self.request.user)
 
+
+class FollowingView(ListCreateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = FollowingSerializer
+
+    def get_queryset(self):
+        return Follow.objects.filter(follower = self.request.user)
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            username = self.request.data['username']
+        except KeyError:
+            return Response({"detail": "Please provide profile username"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            profile = Profile.objects.get(username=username)
+        except ObjectDoesNotExist:
+            return Response({"detail": "No Profile exists with this username"}, status=status.HTTP_400_BAD_REQUEST)
+        
+        request.data.update({"profile" : profile.id, "follower": self.request.user.id})
+        return super().post(request, *args, **kwargs)
+    
