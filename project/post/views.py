@@ -265,4 +265,18 @@ class PostBookmarkView(ListCreateAPIView):
         request.data.update({"post_owner" : Profile.objects.get(user = request.user).id})
         return super().post(request, *args, **kwargs)
  
- 
+
+class BasicPagination(PageNumberPagination):
+    
+    page_size= 8
+    page_size_query_param = 'limit'
+    max_page_size = 20  
+    
+  
+  
+def check_post_exists_in_response(post, response):
+        for item in response:
+            if post.id == item['id']:
+                return True
+        return False  
+   
