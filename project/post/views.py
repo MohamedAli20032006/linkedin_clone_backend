@@ -222,4 +222,32 @@ class ReplyReactionView(ListCreateAPIView):
         request.data.update({"reaction_owner" : Profile.objects.get(user = request.user).id})
         return super().post(request, *args, **kwargs)
     
-   
+
+class SingleReplyReactionView(RetrieveUpdateDestroyAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = SingleReplyReactionSerializer
+    
+    queryset = ReplyReaction.objects.all()
+    
+    def patch(self, request, *args, **kwargs):
+        
+        reply_reaction = get_object_or_404(ReplyReaction,id = kwargs['pk'])
+        if not reply_reaction.reaction_owner.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+        
+        request.data.update({"reaction_owner" : reply_reaction.reaction_owner.id})
+        return super().patch(request, *args, **kwargs)
+
+    
+    def delete(self, request, *args, **kwargs):
+        
+        reply_reaction = get_object_or_404(ReplyReaction,id = kwargs['pk'])
+        if not reply_reaction.reaction_owner.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+            
+        return super().delete(request, *args, **kwargs)
+    
+    
