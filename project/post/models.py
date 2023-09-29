@@ -105,3 +105,16 @@ class CommentReply(models.Model):
     class Meta:
         verbose_name = 'Comment Reply'
         verbose_name_plural = 'Comment Replies'
+
+
+class ReplyReaction(models.Model):
+    
+    comment_reply = models.ForeignKey(CommentReply, on_delete=models.CASCADE)
+    reaction_owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    reaction_type = models.ForeignKey(ReactionType, on_delete=models.CASCADE)
+    
+    class Meta:
+        verbose_name = 'Reply Reaction'
+        verbose_name_plural = 'Reply Reactions'
+        unique_together = (('comment_reply', 'reaction_owner'))
+      
