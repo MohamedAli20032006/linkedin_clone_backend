@@ -41,3 +41,14 @@ class PostImages(models.Model):
         verbose_name = 'Post Image'
         verbose_name_plural = 'Post Images'
  
+
+class ReactionType(models.Model):
+    type = models.CharField(max_length=255)
+    
+    class Meta:
+        verbose_name = 'Reaction Type'
+        verbose_name_plural = 'Reaction Types'
+        
+    def __str__(self):
+        return f"{self.type}"
+    
