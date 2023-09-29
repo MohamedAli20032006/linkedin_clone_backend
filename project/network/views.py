@@ -151,3 +151,13 @@ class DeleteFollowingView(DestroyAPIView):
     def get_queryset(self):
         return Follow.objects.filter(follower = self.request.user)
     
+    
+class FollowersView(ListAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = FollowersSerializer
+    
+    def get_queryset(self):
+        user_profile = get_object_or_404(Profile, user = self.request.user)
+        return Follow.objects.filter(profile = user_profile)
+    
