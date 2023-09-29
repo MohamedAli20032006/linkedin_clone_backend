@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     # my_apps
     'Authentication',
     'network',
+    'notification',
     
     # modules
     'rest_framework',
