@@ -99,3 +99,19 @@ class SinglePostReactionView(RetrieveUpdateDestroyAPIView):
                             status = status.HTTP_405_METHOD_NOT_ALLOWED)
         return super().delete(request, *args, **kwargs)
     
+    
+class PostCommentView(ListCreateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostCommentSerializer
+    
+    def get_queryset(self):
+        
+        post = self.request.GET.get('post')
+        return Comment.objects.filter(post = post)
+    
+    def post(self, request, *args, **kwargs):
+        request.data.update({"comment_owner" : Profile.objects.get(user = request.user).id})
+        return super().post(request, *args, **kwargs)
+    
+    
