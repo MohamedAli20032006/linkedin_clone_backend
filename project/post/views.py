@@ -206,3 +206,20 @@ class SingleReplyView(RetrieveDestroyAPIView):
         return super().destroy(request, *args, **kwargs)
 
 
+class ReplyReactionView(ListCreateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = ReplyReactionSerializer
+    
+    
+    def get_queryset(self):
+        reply = self.request.GET.get('reply')
+        reply = get_object_or_404(CommentReply, id = reply)
+        return ReplyReaction.objects.filter(comment_reply = reply)
+
+
+    def post(self, request, *args, **kwargs):
+        request.data.update({"reaction_owner" : Profile.objects.get(user = request.user).id})
+        return super().post(request, *args, **kwargs)
+    
+   
