@@ -93,3 +93,15 @@ class CommentReaction(models.Model):
         verbose_name_plural = 'Comment Reactions'
         unique_together = (('comment', 'reaction_owner'))
     
+    
+class CommentReply(models.Model):
+    
+    comment = models.ForeignKey(Comment, on_delete=models.CASCADE)
+    reply_owner = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    text = models.TextField()
+    reacted_by = models.ManyToManyField(Profile, through='ReplyReaction', related_name="reacted_replies")
+    created_at = models.DateTimeField(auto_now_add = True)
+    
+    class Meta:
+        verbose_name = 'Comment Reply'
+        verbose_name_plural = 'Comment Replies'
