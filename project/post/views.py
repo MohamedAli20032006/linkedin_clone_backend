@@ -74,3 +74,28 @@ class PostReactionView(ListCreateAPIView):
         request.data.update({"reacted_by" : Profile.objects.get(user = request.user).id})
         return super().post(request, *args, **kwargs)
     
+
+class SinglePostReactionView(RetrieveUpdateDestroyAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = SinglePostReactionSerializer
+    
+    queryset = PostReaction.objects.all()
+    
+    def patch(self, request, *args, **kwargs):
+        
+        post_reaction = get_object_or_404(PostReaction,id = kwargs['pk'])
+        if not post_reaction.reacted_by.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+            
+        return super().patch(request, *args, **kwargs)
+    
+    
+    def delete(self, request, *args, **kwargs):
+        post_reaction = get_object_or_404(PostReaction,id = kwargs['pk'])
+        if not post_reaction.reacted_by.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().delete(request, *args, **kwargs)
+    
