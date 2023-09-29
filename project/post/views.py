@@ -114,4 +114,20 @@ class PostCommentView(ListCreateAPIView):
         request.data.update({"comment_owner" : Profile.objects.get(user = request.user).id})
         return super().post(request, *args, **kwargs)
     
+   
+class SinglePostCommentView(RetrieveDestroyAPIView):
     
+    permission_classes = [IsAuthenticated]
+    serializer_class = SinglePostCommentSerializer
+    
+    queryset = Comment.objects.all()
+    
+    
+    def delete(self, request, *args, **kwargs):
+        comment = get_object_or_404(Comment,id = kwargs['pk'])
+        if not comment.comment_owner.user == self.request.user:
+            return Response({"detail": "You are not allowed to perform this action"},
+                            status = status.HTTP_405_METHOD_NOT_ALLOWED)
+        return super().delete(request, *args, **kwargs)
+    
+  
