@@ -24,3 +24,22 @@ class PaginationHandlerMixin(object):
         assert self.paginator is not None
         return self.paginator.get_paginated_response(data)
 
+
+class PostView(CreateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    
+    
+    def post(self, request, *args, **kwargs):
+        
+        print(request.data)
+        try:
+            request.data._mutable = True
+        except AttributeError:
+            pass
+        request.data.update({"post_owner" : Profile.objects.get(user = request.user).id,
+                             "parent_post": None})
+        return super().post(request, *args, **kwargs)
+
+  
