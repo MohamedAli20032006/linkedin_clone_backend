@@ -109,3 +109,13 @@ class ConnectionRemoveView(views.APIView):
             return Response({"detail": "Connection has been removed successfully"}, status=status.HTTP_200_OK)
         except KeyError:
             return Response({"detail": "Please provide profile username"}, status=status.HTTP_400_BAD_REQUEST)
+
+
+class ConnectionListView(ListAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = ConnectionListSerializer
+
+    def get_queryset(self):
+        return FirstConnections.objects.filter(person = self.request.user)
+
