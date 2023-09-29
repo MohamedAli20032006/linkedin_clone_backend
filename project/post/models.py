@@ -52,3 +52,18 @@ class ReactionType(models.Model):
     def __str__(self):
         return f"{self.type}"
     
+
+class PostReaction(models.Model):
+    
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    reacted_by = models.ForeignKey(Profile, on_delete=models.CASCADE, related_name="post_reactions")
+    reaction_type = models.ForeignKey(ReactionType, on_delete=models.CASCADE)
+    
+    class Meta:
+        verbose_name = 'Post Reaction'
+        verbose_name_plural = 'Post Reactions'
+        unique_together = (('post', 'reacted_by'))
+        
+    def __str__(self):
+        return f"{self.reacted_by.full_name} --> {self.reaction_type} --> ({self.post})"
+
