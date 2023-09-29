@@ -58,3 +58,19 @@ class SinglePostView(RetrieveDestroyAPIView):
                             status = status.HTTP_405_METHOD_NOT_ALLOWED)
         return super().delete(request, *args, **kwargs)
 
+
+class PostReactionView(ListCreateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostReactionSerializer
+    
+    
+    def get_queryset(self):
+        
+        post = self.request.GET.get('post')
+        return PostReaction.objects.filter(post = post)
+    
+    def post(self, request, *args, **kwargs):
+        request.data.update({"reacted_by" : Profile.objects.get(user = request.user).id})
+        return super().post(request, *args, **kwargs)
+    
