@@ -30,3 +30,14 @@ class Post(models.Model):
     def __str__(self):
         return f"{self.post_owner.full_name}--> Post{self.id}"
     
+    
+    
+class PostImages(models.Model):
+    
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='post/images/')
+    
+    class Meta:
+        verbose_name = 'Post Image'
+        verbose_name_plural = 'Post Images'
+ 
