@@ -328,3 +328,21 @@ class FeedView(views.APIView, PaginationHandlerMixin):
         page = self.paginate_queryset(response)
         return self.get_paginated_response(page)
 
+
+class RePostView(CreateAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = PostSerializer
+    
+    
+    def post(self, request, *args, **kwargs):
+        try:
+            request.data._mutable = True
+        except AttributeError:
+            pass
+        if request.data.get('parent_post') is None:
+            return Response({"detail": "For reposting provide parent_post field"})
+        request.data.update({"post_owner" : Profile.objects.get(user = request.user).id,
+                             "parent_post" : request.data.get('parent_post'),
+                             "user" : self.request.user,})
+        return super().post(request, *args, **kwargs)
