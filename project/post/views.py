@@ -346,3 +346,26 @@ class RePostView(CreateAPIView):
                              "parent_post" : request.data.get('parent_post'),
                              "user" : self.request.user,})
         return super().post(request, *args, **kwargs)
+
+
+class ActivityView(ListAPIView):
+    
+    permission_classes = [IsAuthenticated]
+    serializer_class = ActivitySerializer
+    
+    pagination_class = BasicPagination
+    
+    def get_queryset(self):
+        profile = get_object_or_404(Profile, user = self.request.user)
+        
+        queryset1 = Post.objects.filter(post_owner = profile).order_by('-created_at')
+        queryset2 = PostReaction.objects.filter(reacted_by= profile)
+        
+        queryset3 = Comment.objects.filter(comment_owner = profile).order_by('-created_at')
+        queryset4 = CommentReaction.objects.filter(reaction_owner = profile)
+        
+        queryset5 = CommentReply.objects.filter(reply_owner = profile).order_by('-created_at')
+        queryset6 = ReplyReaction.objects.filter(reaction_owner = profile)
+        
+        model_combination = list(chain(queryset1, queryset2, queryset3, queryset4, queryset5, queryset6))
+        return model_combination
